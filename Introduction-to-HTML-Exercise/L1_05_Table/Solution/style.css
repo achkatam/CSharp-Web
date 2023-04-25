@@ -1,0 +1,15 @@
+ thead th{
+    font-size: large;
+    font-weight: bold; 
+ }
+ table, td, tr, th{ 
+    border: 1px solid black;
+ }
+
+h2{
+    text-align: left;
+ }
+
+ tfoot tr{
+    text-align: right;
+ }
