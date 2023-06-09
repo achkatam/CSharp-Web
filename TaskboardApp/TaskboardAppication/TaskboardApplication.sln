@@ -12,9 +12,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskboardApplication.Data",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskboardApplication.Web.ViewModels", "..\TaskboardApplication.ViewModels\TaskboardApplication.Web.ViewModels.csproj", "{AF6E8F67-85B7-458A-927D-5BD89E861239}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskboardApplication.Common", "..\TaskboardApplication.Common\TaskboardApplication.Common.csproj", "{E01866E1-9576-428F-A280-D89DF1057BF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskboardApplication.Common", "..\TaskboardApplication.Common\TaskboardApplication.Common.csproj", "{E01866E1-9576-428F-A280-D89DF1057BF0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskboardApplication.Data.Models", "..\TaskboardApplication.Data.Models\TaskboardApplication.Data.Models.csproj", "{462CF901-FFBD-4236-B130-BB370EA06E1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskboardApplication.Data.Models", "..\TaskboardApplication.Data.Models\TaskboardApplication.Data.Models.csproj", "{462CF901-FFBD-4236-B130-BB370EA06E1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskboardAppication.Services", "..\TaskboardAppication.Services\TaskboardAppication.Services.csproj", "{39721BCB-52B8-4BDF-B8C2-2A1605756D5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +44,10 @@ Global
 		{462CF901-FFBD-4236-B130-BB370EA06E1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{462CF901-FFBD-4236-B130-BB370EA06E1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{462CF901-FFBD-4236-B130-BB370EA06E1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39721BCB-52B8-4BDF-B8C2-2A1605756D5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39721BCB-52B8-4BDF-B8C2-2A1605756D5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39721BCB-52B8-4BDF-B8C2-2A1605756D5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39721BCB-52B8-4BDF-B8C2-2A1605756D5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
+using TaskboardAppication.Services;
+using TaskboardAppication.Services.Interfaces;
 using TaskboardApplication.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +29,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
             .GetValue<int>("Identity:Password:RequiredLength");
     })
     .AddEntityFrameworkStores<TaskBoardAppDbContext>();
+
+builder.Services.AddScoped<IBoardService, BoardService>();
 
 builder.Services.AddControllersWithViews();
 

@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TaskboardAppication.Services\TaskboardAppication.Services.csproj" />
     <ProjectReference Include="..\TaskboardApplication.Data\TaskboardApplication.Data.csproj" />
     <ProjectReference Include="..\TaskboardApplication.ViewModels\TaskboardApplication.Web.ViewModels.csproj" />
   </ItemGroup>
