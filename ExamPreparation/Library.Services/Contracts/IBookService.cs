@@ -1,18 +1,22 @@
 ﻿namespace Library.Services.Contracts;
 
-using ViewModels.ViewModels.Book;
+using ViewModels.Book;
 
 public interface IBookService
 {
     Task<IEnumerable<AllBookViewModel>> GetAllAsync();
 
-    Task<IEnumerable<MineBookViewModel>> GetMyBooksAsync(string userId);
+    Task<IEnumerable<MineBookViewModel>> GetMyBookAsync(string userId);
+    
+    Task<BookViewModel?> GetBookByIdAsync(int id);
+    Task<EditBookViewModel?> GetBookByIdForEditAsync(int id);
 
-    Task<BookViewModel?> GetBookById(int id);
+    Task AddToCollectionBookAsync(BookViewModel model, string userId);
+    Task RemoveBookFromCollectionAsync(int bookId, string userId);
+     
+    Task<AddBookViewModel> GetNewBookAsync();
 
-    Task AddToCollectionAsync(string userId, BookViewModel book);
-
-    Task RemoveFromCollectionAsync(string userId, BookViewModel book);
-    Task<AddBookViewModel> GetNewAddBookModelASync();
     Task AddNewBook(AddBookViewModel model);
+
+    Task EditBookAsync(EditBookViewModel model, int id);
 }

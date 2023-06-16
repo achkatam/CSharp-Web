@@ -1,12 +1,11 @@
 ﻿namespace Library.Services;
 
-using Microsoft.EntityFrameworkCore;
-
 using Contracts;
-using Data.Data.Models;
-using Library.Data.Data;
-using ViewModels.ViewModels.Book;
-using ViewModels.ViewModels.Category;
+using Data;
+using Data.Models;
+using Microsoft.EntityFrameworkCore;
+using ViewModels.Book;
+using ViewModels.Category;
 
 public class BookService : IBookService
 {
@@ -19,13 +18,13 @@ public class BookService : IBookService
 
     public async Task<IEnumerable<AllBookViewModel>> GetAllAsync()
     {
-        var books = await dbContext.Books
-            .Select(b => new AllBookViewModel
+        var books = await this.dbContext
+            .Books
+            .Select(b => new AllBookViewModel()
             {
                 Id = b.Id,
                 Title = b.Title,
                 Author = b.Author,
-                ImageUrl = b.ImageUrl,
                 Rating = b.Rating,
                 Category = b.Category.Name
             })
@@ -34,28 +33,27 @@ public class BookService : IBookService
         return books;
     }
 
-    public async Task<IEnumerable<MineBookViewModel>> GetMyBooksAsync(string userId)
+    public async Task<IEnumerable<MineBookViewModel>> GetMyBookAsync(string userId)
     {
-        var myBooks = await dbContext
-            .UsersBooks
-            .Where(ub => ub.CollectorId == userId)
+        var books = await this.dbContext
+            .UsersBooks.Where(ub => ub.CollectorId == userId)
             .Select(b => new MineBookViewModel()
             {
-                Id = b.Book.Id,
+                Id = b.BookId,
                 Title = b.Book.Title,
                 Author = b.Book.Author,
-                ImageUrl = b.Book.ImageUrl,
                 Description = b.Book.Description,
-                Category = b.Book.Category.Name
+                ImageUrl = b.Book.ImageUrl,
+                Category = b.Book.Category.Name,
             })
             .ToListAsync();
 
-        return myBooks;
+        return books;
     }
 
-    public async Task<BookViewModel?> GetBookById(int id)
+    public async Task<BookViewModel?> GetBookByIdAsync(int id)
     {
-        var book = await dbContext
+        var book = await this.dbContext
             .Books
             .Where(b => b.Id == id)
             .Select(b => new BookViewModel()
@@ -63,8 +61,8 @@ public class BookService : IBookService
                 Id = b.Id,
                 Title = b.Title,
                 Author = b.Author,
-                ImageUrl = b.ImageUrl,
                 Description = b.Description,
+                ImageUrl = b.ImageUrl,
                 CategoryId = b.CategoryId,
                 Rating = b.Rating
             })
@@ -72,50 +70,51 @@ public class BookService : IBookService
 
         return book;
     }
-    public async Task AddToCollectionAsync(string userId, BookViewModel book)
+
+
+    public async Task AddToCollectionBookAsync(BookViewModel model, string userId)
     {
-        bool alreadyAdded = await dbContext
+        bool alreadyAdded = await this.dbContext
             .UsersBooks
-            .AnyAsync(ub => ub.CollectorId == userId);
+            .AnyAsync(ub => ub.BookId == model.Id && ub.CollectorId == userId);
 
         if (!alreadyAdded)
         {
-            var userBook = new IdentityUserBook
+            var userBook = new IdentityUserBook()
             {
-                CollectorId = userId,
-                BookId = book.Id
+                BookId = model.Id,
+                CollectorId = userId
             };
 
-            await dbContext.UsersBooks.AddAsync(userBook);
-            await dbContext.SaveChangesAsync();
+            await this.dbContext.UsersBooks.AddAsync(userBook);
+
+            await this.dbContext.SaveChangesAsync();
         }
     }
 
-    public async Task RemoveFromCollectionAsync(string userId, BookViewModel book)
+    public async Task RemoveBookFromCollectionAsync(int bookId, string userId)
     {
-        var bookToRemove = await dbContext
-                .UsersBooks
-                .FirstOrDefaultAsync(ub => ub.CollectorId == userId && ub.BookId == book.Id);
+        var bookToRemove = await this.dbContext
+            .UsersBooks
+            .FirstOrDefaultAsync(ub => ub.BookId == bookId && ub.CollectorId == userId);
 
         if (bookToRemove != null)
         {
+            this.dbContext.UsersBooks.Remove(bookToRemove);
 
-            dbContext.UsersBooks.Remove(bookToRemove);
-
-            await dbContext.SaveChangesAsync();
+            await this.dbContext.SaveChangesAsync();
         }
-
     }
 
-    public async Task<AddBookViewModel> GetNewAddBookModelASync()
+    public async Task<AddBookViewModel> GetNewBookAsync()
     {
-        var categories = await dbContext.Categories
-             .Select(c => new CategoryViewModel()
-             {
-                 Id = c.Id,
-                 Name = c.Name
-             })
-             .ToListAsync();
+        var categories = await this.dbContext.Categories
+            .Select(c => new CategoryViewModel()
+            {
+                Id = c.Id,
+                Name = c.Name
+            })
+            .ToListAsync();
 
         var model = new AddBookViewModel()
         {
@@ -127,17 +126,58 @@ public class BookService : IBookService
 
     public async Task AddNewBook(AddBookViewModel model)
     {
-        Book book = new Book
+        var book = new Book
         {
             Title = model.Title,
             Author = model.Author,
             Description = model.Description,
             ImageUrl = model.ImageUrl,
-            Rating = model.Rating,
-            CategoryId = model.CategoryId
+            CategoryId = model.CategoryId,
+            Rating = model.Rating
         };
 
-        await dbContext.Books.AddAsync(book);
-        await dbContext.SaveChangesAsync();
+        await this.dbContext.Books.AddAsync(book);
+        await this.dbContext.SaveChangesAsync();
+
+    }
+
+    public async Task<EditBookViewModel?> GetBookByIdForEditAsync(int id)
+    {
+        var categories = await this.dbContext
+            .Categories
+            .Select(c => new CategoryViewModel()
+        {
+            Id = c.Id,
+            Name = c.Name
+        })
+            .ToListAsync();
+
+        var book = await this.dbContext
+            .Books
+            .Where(b => b.Id == id)
+            .Select(b => new EditBookViewModel()
+            {
+                Description = b.Description,
+                ImageUrl = b.ImageUrl,
+                Rating = b.Rating
+            })
+            .FirstOrDefaultAsync();
+
+        return book;
+    }
+    public async Task EditBookAsync(EditBookViewModel model, int id)
+    {
+        var book = await this.dbContext
+            .Books
+            .FirstOrDefaultAsync(b => b.Id == id);
+
+        if (book != null)
+        {
+            book.Description = model.Description;
+            book.ImageUrl = model.ImageUrl;
+            book.Rating = model.Rating;
+
+            await this.dbContext.SaveChangesAsync();
+        }
     }
 }
