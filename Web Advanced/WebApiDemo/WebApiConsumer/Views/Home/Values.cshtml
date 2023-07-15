@@ -1,0 +1,31 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div id="infoWrapper"></div>
+<input id="infoParam" />
+<button id="btnGetInfo">Get Info</button>
+
+@section Scripts { 
+    <script>
+        $(document).on(function() {
+            $("#btnGetInfo").click(function() {
+                var infoParam = $("#infoParam").val();
+                $.ajax({
+                    url: "https://localhost:7200/Values/GetValues?id=3" + infoParam,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        $("#infoWrapper").html(data);
+                    },
+                    error: function(xhr, status, error) {
+                        var err = eval("(" + xhr.responseText + ")");
+                        alert(err.Message);
+                    }
+                });
+            });
+        });
+    </script>
+}
